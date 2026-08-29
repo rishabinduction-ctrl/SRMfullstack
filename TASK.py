@@ -98,3 +98,93 @@ Transform the basic Account model from Activity 2 into a more
 defensive, state-aware, and secure banking domain model.
 
 """
+
+# repo name
+# rishabinduction-ctrl/SRMfullstack
+
+# gdb/domain/account.py
+
+class Account:
+    MIN_BALANCE_SAVINGS: float = 500.0
+    MIN_BALANCE_CURRENT: float = 1000.0
+
+    def __init__(self, account_number: int, name: str, age: int, initial_balance: float, account_type: str) -> None:
+        self._account_number = account_number
+        self._name = name
+        self._pin: int | None = None
+        self._status = "Active"
+
+        if age < 18:
+            print(f"Creating account with age {age}")
+            self.guardian = input("Enter guardian's name: ")
+            self.guardian_age = int(input("Enter guardian's age: "))
+            self._age = age
+        else: self._age = age
+
+        if account_type not in ("Savings", "Current"):
+            print(f'Creating account with type "{account_type}"')
+            print("Account type defaulted to: Savings")
+            self._account_type = "Savings"
+        else: self._account_type = account_type
+
+        min_bal = self.get_minimum_balance()
+        if initial_balance < min_bal:
+            if self._account_type in ("Savings", "Current"):
+                print(f"Creating {self._account_type} account with Rs. {initial_balance} (below minimum)")
+                print(f"Balance auto-corrected to minimum: Rs. {min_bal}")
+            self._balance = min_bal
+        else: self._balance = initial_balance
+
+    def get_minimum_balance(self) -> float:
+        return self.MIN_BALANCE_SAVINGS if self._account_type == "Savings" else self.MIN_BALANCE_CURRENT
+
+    def deposit(self, amount: float) -> bool:
+        '''
+        Enter the amount to be deposited.\n
+        Make sure it is a positive float value\n
+        The amount will add to the bank balance
+        '''
+        if self._status != "Active" or amount <= 0: return False
+        self._balance += amount
+        return True
+
+    def withdraw(self, amount: float, pin: int | None = None) -> bool:
+        if self._status != "Active": return False
+        if self._pin is not None and (pin is None or self._pin != pin): return False
+        if amount <= 0: return False
+        if (self._balance - amount) < self.get_minimum_balance(): return False
+        self._balance -= amount
+        return True
+
+    def close_account(self) -> bool:
+        if self._status == "Inactive": return False
+        self._status = "Inactive"
+        return True
+
+    def reopen_account(self) -> bool:
+        if self._status == "Active": return False
+        self._status = "Active"
+        return True
+
+    def set_pin(self, pin: int) -> bool:
+        if 1000 <= pin <= 9999:
+            self._pin = pin
+            return True
+        return False
+
+    def verify_pin(self, pin: int) -> bool: return self._pin is not None and self._pin == pin
+    def has_pin(self) -> bool: return self._pin is not None
+
+    # @property
+    # def account_number(self) -> int: return self._account_number
+    # @property
+    # def name(self) -> str: return self._name
+    # @property
+    # def age(self) -> int: return self._age
+    # @property
+    # def balance(self) -> float: return self._balance
+    # @property
+    # def account_type(self) -> str: return self._account_type
+    # @property
+    # def status(self) -> str: return self._status
+

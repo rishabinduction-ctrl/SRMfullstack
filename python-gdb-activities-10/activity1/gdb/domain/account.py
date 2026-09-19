@@ -96,7 +96,6 @@ class Account:
     def get_status(self):
         return self._status
 
-    def get_age(
     def set_status(self, status):
         self._status = status
         return self._status

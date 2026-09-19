@@ -1,15 +1,74 @@
-package com.gdb.domain;
+from gdb.domain.iaccount import IAccount
+from gdb.domain.savings_account import SavingsAccount
+from gdb.domain.current_account import CurrentAccount
+from gdb.domain.salary_account import SalaryAccount
+from gdb.domain.fixed_deposit_account import FixedDepositAccount
+from gdb.exceptions import AccountException
 
-public class AccountFactory {
-    // TODO: Step 3 - Centralise account creation with a switch on the account type:
-    //   - If type is null, return null.
-    //   - switch (type.toUpperCase()):
-    //       "SAVINGS"             -> a new SavingsAccount      (minBalance 1000.0, interestRate 4.0)
-    //       "CURRENT"             -> a new CurrentAccount      (overdraftLimit 25000.0)
-    //       "FIXED_DEPOSIT", "FD" -> a new FixedDepositAccount (tenureMonths 12, interestRate 6.5)
-    //       "SALARY"              -> a new SalaryAccount       (employerName "TechCorp")
-    //       default               -> throw new IllegalArgumentException("Unknown account type: " + type)
-    public static IAccount createAccount(String type, String accNum, String name, int age, double balance, String status, String pin) {
-        throw new UnsupportedOperationException("TODO: implement AccountFactory.createAccount (Activity 11, Step 3)");
-    }
-}
+
+class AccountFactory:
+    """Factory creating IAccount instances based on type."""
+
+    @staticmethod
+    def create_account(
+        account_type: str,
+        account_number: str,
+        name: str,
+        age: int,
+        balance: float,
+        status: str = "Active",
+        pin: str = "0000"
+    ) -> IAccount:
+
+        if not account_type or not account_type.strip():
+            raise AccountException("Account type cannot be empty")
+
+        account_type = account_type.strip().upper()
+
+        if account_type == "SAVINGS":
+            return SavingsAccount(
+                account_number,
+                name,
+                age,
+                balance,
+                status,
+                pin,
+                interest_rate=4.0,
+                minimum_balance=1000.0
+            )
+
+        elif account_type == "CURRENT":
+            return CurrentAccount(
+                account_number,
+                name,
+                age,
+                balance,
+                status,
+                pin,
+                overdraft_limit=10000.0
+            )
+
+        elif account_type == "SALARY":
+            return SalaryAccount(
+                account_number,
+                name,
+                age,
+                balance,
+                status,
+                pin
+            )
+
+        elif account_type == "FIXEDDEPOSIT":
+            return FixedDepositAccount(
+                account_number,
+                name,
+                age,
+                balance,
+                status,
+                pin,
+                tenure_months=12,
+                interest_rate=6.5
+            )
+
+        else:
+            raise AccountException(f"Unknown account type: {account_type}")

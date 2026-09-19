@@ -6,10 +6,27 @@ class AccountRulesPropertiesLoader:
 
     @staticmethod
     def load_rules(account_type: str) -> dict:
-        # TODO (Step 2): Load gdb/resources/config/rules/<account_type in lower case>.properties into a dict.
-        #   1. Build the path relative to this module so it works from any working directory, e.g.
-        #      os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "resources", "config", "rules", ...)
-        #   2. If the file does not exist, return an empty dict.
-        #   3. Read it line by line (encoding="utf-8"); skip blank lines and lines starting with "#".
-        #   4. Split each remaining "key=value" line on the FIRST "=" and store the stripped key and value strings.
-        raise NotImplementedError("TODO: implement AccountRulesPropertiesLoader.load_rules()")
+        if not account_type or not account_type.strip():
+            return {}
+
+        file_name = f"{account_type.strip().lower()}.properties"
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        file_path = os.path.join(base_dir, "..", "resources", "config", "rules", file_name)
+
+        if not os.path.exists(file_path):
+            return {}
+
+        properties = {}
+        try:
+            with open(file_path, "r", encoding="utf-8") as f:
+                for line in f:
+                    line = line.strip()
+                    if not line or line.startswith("#"):
+                        continue
+                    if "=" in line:
+                        key, val = line.split("=", 1)
+                        properties[key.strip()] = val.strip()
+        except OSError:
+            return {}
+
+        return properties

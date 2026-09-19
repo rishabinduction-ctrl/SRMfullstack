@@ -1,5 +1,6 @@
 # gdb/domain/salary_account.py
 # ACTIVITY 12: Replace this file with your completed Activity 11 version before writing the tests.
+
 from gdb.domain.abstract_account import AbstractAccount
 
 class SalaryAccount(AbstractAccount):
@@ -7,9 +8,7 @@ class SalaryAccount(AbstractAccount):
         super().__init__(account_number, name, age, balance, status, pin)
 
     def calculate_interest(self) -> float:
-        # TODO: Salary accounts earn no interest -- return 0.0 to fulfil the IAccount contract.
-        raise NotImplementedError("TODO: implement SalaryAccount.calculate_interest()")
+        return 0.0
 
     def get_account_type(self) -> str:
-        # TODO: Return this product's type name, "Salary".
-        raise NotImplementedError("TODO: implement SalaryAccount.get_account_type()")
+        return "Salary"

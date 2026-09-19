@@ -5,12 +5,21 @@ from gdb.exceptions import (
     InvalidAmountException,
     InsufficientBalanceException,
     InactiveAccountException,
-    InvalidPinException
+    InvalidPinException,
 )
 
 class BankAccount(ABC):
     """Abstract Base Class modeling generic Bank Account."""
-    def __init__(self, account_number: str, name: str, age: int, balance: float, status: str = "Active", pin: str = "0000") -> None:
+
+    def __init__(
+        self,
+        account_number: str,
+        name: str,
+        age: int,
+        balance: float,
+        status: str = "Active",
+        pin: str = "0000",
+    ) -> None:
         if not account_number or not account_number.strip():
             raise AccountException("Account number cannot be empty")
         if age < 18:
@@ -27,16 +36,15 @@ class BankAccount(ABC):
         self._status: str = status
         self._pin: str = pin
 
-    # TODO (Step 1): Turn the two methods below into abstract contracts by decorating each one with
-    #   @abstractmethod (the body can then simply be `pass`). Afterwards BankAccount itself can no longer
-    #   be instantiated, and every subclass is forced to override both methods.
+    @abstractmethod
     def calculate_interest(self) -> float:
         """Abstract method enforced on all subclasses."""
-        raise NotImplementedError("TODO: declare calculate_interest() as an @abstractmethod")
+        pass
 
+    @abstractmethod
     def get_account_type(self) -> str:
         """Abstract method returning product type string."""
-        raise NotImplementedError("TODO: declare get_account_type() as an @abstractmethod")
+        pass
 
     def deposit(self, amount: float) -> None:
         if self._status.lower() != "active":
@@ -51,24 +59,16 @@ class BankAccount(ABC):
         if amount <= 0:
             raise InvalidAmountException(f"Withdrawal amount must be strictly positive: {amount}")
         if amount > self._balance:
-            raise InsufficientBalanceException(f"Insufficient balance")
+            raise InsufficientBalanceException("Insufficient balance")
         self._balance -= amount
 
     def display_account_info(self) -> None:
-        # TODO (Step 1): Make this a template method. BankAccount no longer stores _account_type, so replace
-        #   self._account_type below with a call to the abstract hook self.get_account_type().
         print(f"Account Number: {self._account_number}")
         print(f"Name: {self._name}")
         print(f"Age: {self._age}")
-        print(f"Balance: Rs {self._balance}")
-        print(f"Account Type: {self._account_type}")
+        print(f"Balance: {self._balance}")
         print(f"Status: {self._status}")
-
-    @property
-    def account_number(self) -> str: return self._account_number
-    @property
-    def name(self) -> str: return self._name
-    @property
+        print(f"Account Type: {self.get_account_type()}")
     def age(self) -> int: return self._age
     @property
     def balance(self) -> float: return self._balance

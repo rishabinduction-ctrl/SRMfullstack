@@ -1,11 +1,53 @@
-# gdb/domain/iaccount.py
 from abc import ABC, abstractmethod
 
 class IAccount(ABC):
     """Pure Interface defining the contract for all bank accounts."""
-    # TODO (Step 1): Declare the full account contract as @abstractmethod members (each body is just `pass`):
-    #   Methods:    deposit(amount) -> None, withdraw(amount) -> None, calculate_interest() -> float,
-    #               display_account_info() -> None, validate_pin(entered_pin) -> bool, get_account_type() -> str
-    #   Properties: account_number -> str, name -> str, age -> int, balance -> float, status -> str
-    #               (stack @property on top of @abstractmethod for these)
-    pass
+
+    @property
+    @abstractmethod
+    def account_number() -> str:
+        pass
+
+    @property
+    @abstractmethod
+    def name() -> str:
+        pass
+
+    @property
+    @abstractmethod
+    def age() -> int:
+        pass
+
+    @property
+    @abstractmethod
+    def balance() -> float:
+        pass
+
+    @property
+    @abstractmethod
+    def status() -> str:
+        pass
+
+    @abstractmethod
+    def deposit(self, amount: float) -> None:
+        pass
+
+    @abstractmethod
+    def withdraw(self, amount: float) -> None:
+        pass
+
+    @abstractmethod
+    def calculate_interest(self) -> float:
+        pass
+
+    @abstractmethod
+    def display_account_info(self) -> None:
+        pass
+
+    @abstractmethod
+    def validate_pin(self, entered_pin: str) -> bool:
+        pass
+
+    @abstractmethod
+    def get_account_type(self) -> str:
+        pass
